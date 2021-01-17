@@ -9,7 +9,11 @@ function OrdersPage() {
     const products = await AsyncStorage.getItem('@BUY');
     const parsedProducts = JSON.parse(products);
     console.log(parsedProducts);
-    setData(parsedProducts[0]);
+    let arrayToPrint = [];
+    for (let i = 0; i < parsedProducts.length; i++) {
+      arrayToPrint.push(...parsedProducts[i]);
+    }
+    setData(arrayToPrint);
   }
   // [[{ürün1},{ürün2},{ürün3}], [{ürün1},{ürün2}]]
 

@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function DetailCard({data, onFavorite, onCart}) {
   const [color, setColor] = useState(null);
 
-  async function changeColor() {
+  async function pickColor() {
     let products = await AsyncStorage.getItem('@FAVPRODUCTS');
     if (!products) {
       products = [];
@@ -18,14 +18,24 @@ function DetailCard({data, onFavorite, onCart}) {
     let abc = products.some((item) => item.id === data.id) ? 'red' : 'gray';
     setColor(abc);
   }
+  function changeColor() {
+    if (color === 'gray') {
+      setColor('red');
+    }
+  }
   console.log(color);
   useEffect(() => {
-    changeColor();
+    pickColor();
   }, []);
 
   return (
     <View style={detail_style.container}>
-      <TouchableOpacity style={detail_style.favContainer} onPress={onFavorite}>
+      <TouchableOpacity
+        style={detail_style.favContainer}
+        onPress={() => {
+          onFavorite();
+          changeColor();
+        }}>
         <Icon name="heart" color={color} size={53} />
       </TouchableOpacity>
 
