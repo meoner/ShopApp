@@ -7,7 +7,11 @@ function ProductCard(props) {
   return (
     <View style={product_card.container}>
       <TouchableOpacity onPress={props.onPress}>
-        <Image style={product_card.image} source={{uri: props.product.image}} />
+        <Image
+          resizeMode="contain"
+          style={product_card.image}
+          source={{uri: props.product.image}}
+        />
         <View style={product_card.touchableContainer}>
           <Text style={product_card.title}>{props.product.title}</Text>
           <Text style={product_card.description} numberOfLines={1}>

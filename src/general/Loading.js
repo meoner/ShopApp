@@ -1,11 +1,16 @@
 import React from 'react';
-import {ActivityIndicator, View, Text} from 'react-native';
+import {View, Text} from 'react-native';
+import LottieView from 'lottie-react-native';
 
 function Loading() {
   return (
-    <View>
-      <Text>sdfsdfsdfsd</Text>
-      <ActivityIndicator size="large" style={{marginVertical: 100}} />
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <LottieView
+        style={{alignSelf: 'center', width: 100}}
+        source={require('./loading.json')}
+        autoPlay
+        loop
+      />
     </View>
   );
 }

@@ -1,12 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {detail_style} from '../styles/styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LottieView from 'lottie-react-native';
 
 function DetailCard({data, onFavorite, onCart}) {
   const [color, setColor] = useState(null);
+  const dispatch = useDispatch();
+  let cartButton = useRef(null);
 
   async function pickColor() {
     let products = await AsyncStorage.getItem('@FAVPRODUCTS');
@@ -18,12 +21,13 @@ function DetailCard({data, onFavorite, onCart}) {
     let abc = products.some((item) => item.id === data.id) ? 'red' : 'gray';
     setColor(abc);
   }
+
   function changeColor() {
     if (color === 'gray') {
       setColor('red');
     }
   }
-  console.log(color);
+
   useEffect(() => {
     pickColor();
   }, []);
@@ -46,10 +50,23 @@ function DetailCard({data, onFavorite, onCart}) {
           source={{uri: data.image}}
         />
       </View>
+
       <Text style={detail_style.title}>{data.title}</Text>
+
       <View style={detail_style.basket}>
-        <TouchableOpacity style={detail_style.cartContainer} onPress={onCart}>
-          <Icon name="cart" color="tomato" size={40} />
+        <TouchableOpacity
+          style={detail_style.cartContainer}
+          onPress={() => {
+            cartButton.play();
+            return dispatch({type: 'ADD_TO_BASKET', payload: {data}});
+          }}>
+          <LottieView
+            ref={(animation) => {
+              cartButton = animation;
+            }}
+            source={require('./cart.json')}
+            loop={false}
+          />
         </TouchableOpacity>
         <Text style={detail_style.price}>{data.price} €</Text>
       </View>

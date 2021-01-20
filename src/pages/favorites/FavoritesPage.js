@@ -1,12 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {View, RefreshControl, FlatList} from 'react-native';
+import {Text, View, RefreshControl, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ProductCard} from './components/ProductCard';
-import {Empty} from '../../general/Empty.js';
+import {useIsFocused} from '@react-navigation/native';
+import {Empty, Loading, Error} from '../../general/Empty.js';
 
 function FavoritesPage(props) {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const isFocused = useIsFocused();
 
   async function getFavorites() {
     setLoading(true);
@@ -23,14 +25,15 @@ function FavoritesPage(props) {
     } else {
       products = JSON.parse(products);
     }
-    let filteredProducts = products.filter((item) => item.id != id);
+    let filteredProducts = products.filter((item) => item.id !== id);
     products = JSON.stringify(filteredProducts);
     await AsyncStorage.setItem('@FAVPRODUCTS', products);
     getFavorites();
   }
   useEffect(() => {
     getFavorites();
-  }, []);
+  }, [isFocused]);
+
   function renderProduct({item}) {
     return (
       <ProductCard

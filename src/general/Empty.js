@@ -1,10 +1,15 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
+import LottieView from 'lottie-react-native';
 
 function Empty() {
   return (
-    <View>
-      <Text>Error</Text>
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <LottieView
+        style={{alignSelf: 'center', width: 100}}
+        source={require('./empty.json')}
+        autoPlay
+      />
     </View>
   );
 }

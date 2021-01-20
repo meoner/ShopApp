@@ -1,25 +1,21 @@
-import React from 'react';
-import {View, Text, FlatList, ActivityIndicator, Button} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import {Empty} from '../../general';
+import {CartItem} from './components';
+import {cart_page} from './styles';
 import {useSelector, useDispatch} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function CartPage() {
-  const dispatch = useDispatch();
   const data = useSelector((state) => state.basket);
-  const sum = data.reduce(function (acc, obj) {
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+
+  const totalSum = data.reduce(function (acc, obj) {
     return acc + obj.piece * obj.price;
   }, 0);
-  console.log('#######', data);
-  function renderDD({item}) {
-    return (
-      <View>
-        <Text>{item.title}</Text>
-        <Text>tutar: {item.piece * item.price}</Text>
-      </View>
-    );
-  }
-
-  async function buyButon() {
+  async function buyButton() {
     let oldBuy = await AsyncStorage.getItem('@BUY');
     if (!oldBuy) {
       oldBuy = [];
@@ -31,18 +27,35 @@ function CartPage() {
     await AsyncStorage.setItem('@BUY', oldBuy);
     dispatch({type: 'DELETE_BASKET'});
   }
-  // buton ekle reducer datayı sıfırlasın, datayı aysnc stroge'a kaydetsin, aysnc stroge'ı diğer sekmede göster.
+  useEffect(() => {}, [isFocused]);
+
+  function renderComponent({item}) {
+    return (
+      <View>
+        <CartItem data={item} />
+      </View>
+    );
+  }
+  console.log(data);
   return (
     <View>
-      <Text>CartPage</Text>
+      <View style={cart_page.container}>
+        <Text style={cart_page.text}>Your Cart</Text>
+      </View>
       <FlatList
         keyExtractor={(_, i) => i.toString()}
         data={data}
-        renderItem={renderDD}
-        ListEmptyComponent={() => <Text> Sepette ürün yok.</Text>}
+        renderItem={renderComponent}
+        ListEmptyComponent={() => <Empty />}
       />
-      <Text>{sum.toFixed(2)}</Text>
-      <Button title="Buy" onPress={buyButon} />
+      {data.length === 0 ? null : (
+        <Text style={cart_page.totalSum}>Total: {totalSum.toFixed(2)} €</Text>
+      )}
+      {data.length === 0 ? null : (
+        <TouchableOpacity onPress={buyButton} style={cart_page.button}>
+          <Text style={cart_page.buttonText}> Buy </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

@@ -41,7 +41,9 @@ const detail_style = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: '#D0D3D4',
+    backgroundColor: 'white',
+    width: 60,
+    height: 60,
   },
   price: {
     alignSelf: 'center',
